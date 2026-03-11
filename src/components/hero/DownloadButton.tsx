@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Download, Loader2 } from 'lucide-react';
+import { Download } from 'lucide-react';
+
+interface ReleaseAsset {
+  version: string;
+  aarch64Url: string;
+  x64Url: string;
+}
 
 interface Props {
   locale: 'en' | 'zh';
+  release?: ReleaseAsset;
 }
 
 type Platform = 'mac' | 'windows' | 'linux';
-
-interface ReleaseInfo {
-  version: string;
-  dmgUrl: string;
-}
 
 function detectPlatform(): Platform {
   const ua = navigator.userAgent.toLowerCase();
@@ -35,35 +37,21 @@ function isAppleSilicon(): boolean {
 }
 
 const GITHUB_RELEASES = 'https://github.com/clawz-ai/ClawZ/releases';
-const API_URL = 'https://api.github.com/repos/clawz-ai/ClawZ/releases/latest';
 
-export default function DownloadButton({ locale }: Props) {
+export default function DownloadButton({ locale, release }: Props) {
   const [platform, setPlatform] = useState<Platform>('mac');
-  const [release, setRelease] = useState<ReleaseInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [arch, setArch] = useState<'aarch64' | 'x64'>('aarch64');
 
   useEffect(() => {
     setPlatform(detectPlatform());
-
-    fetch(API_URL)
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (!data?.assets) return;
-        const arch = isAppleSilicon() ? 'aarch64' : 'x64';
-        const dmg = data.assets.find(
-          (a: { name: string }) => a.name.endsWith('.dmg') && a.name.includes(arch)
-        );
-        if (dmg) {
-          const version = data.tag_name?.replace(/^v/, '') || '';
-          setRelease({ version, dmgUrl: dmg.browser_download_url });
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    setArch(isAppleSilicon() ? 'aarch64' : 'x64');
   }, []);
 
   const isMac = platform === 'mac';
-  const downloadUrl = isMac && release ? release.dmgUrl : GITHUB_RELEASES;
+  const dmgUrl = release
+    ? (arch === 'aarch64' ? release.aarch64Url : release.x64Url)
+    : null;
+  const downloadUrl = isMac && dmgUrl ? dmgUrl : GITHUB_RELEASES;
   const versionLabel = release?.version ? ` v${release.version}` : '';
 
   const label = locale === 'zh'
@@ -77,15 +65,11 @@ export default function DownloadButton({ locale }: Props) {
     <div className="flex flex-col items-center gap-4 sm:flex-row">
       <a
         href={downloadUrl}
-        target={release ? undefined : '_blank'}
-        rel={release ? undefined : 'noopener noreferrer'}
+        target={dmgUrl ? undefined : '_blank'}
+        rel={dmgUrl ? undefined : 'noopener noreferrer'}
         className="group relative inline-flex items-center gap-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-light px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5"
       >
-        {loading ? (
-          <Loader2 className="h-5 w-5 animate-spin" />
-        ) : (
-          <Download className="h-5 w-5" />
-        )}
+        <Download className="h-5 w-5" />
         {label}
         <div className="absolute inset-0 rounded-xl bg-white/10 opacity-0 transition-opacity group-hover:opacity-100" />
       </a>

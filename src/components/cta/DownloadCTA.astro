@@ -1,5 +1,6 @@
 ---
 import { t, type Locale } from '../../i18n/utils';
+import { getLatestRelease } from '../../data/release';
 import DownloadButton from '../hero/DownloadButton.tsx';
 import ScrollReveal from '../ui/ScrollReveal.tsx';
 
@@ -8,6 +9,7 @@ interface Props {
 }
 
 const { locale = 'en' } = Astro.props;
+const release = await getLatestRelease();
 ---
 
 <section id="download" class="relative section-padding">
@@ -23,7 +25,7 @@ const { locale = 'en' } = Astro.props;
         {t('cta.subtitle', locale)}
       </p>
       <div class="mt-10 flex justify-center">
-        <DownloadButton locale={locale} client:load />
+        <DownloadButton locale={locale} release={release} client:load />
       </div>
     </ScrollReveal>
   </div>
