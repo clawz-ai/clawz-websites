@@ -1,0 +1,76 @@
+---
+import { t, type Locale } from '../../i18n/utils';
+import DownloadButton from './DownloadButton.tsx';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+---
+
+<section class="relative overflow-hidden pt-36 pb-24 lg:pt-48 lg:pb-40">
+  <!-- Background effects -->
+  <div class="glow-orb absolute top-20 left-1/4 h-[500px] w-[500px] bg-primary/[0.07]" />
+  <div class="glow-orb absolute top-40 right-1/4 h-[400px] w-[400px] bg-primary-light/[0.05]" />
+  <div class="absolute inset-0 opacity-[0.02]" style="background-image: radial-gradient(circle, #5DADE2 1px, transparent 1px); background-size: 32px 32px;" />
+
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="text-center">
+      <!-- Badge -->
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium text-primary-light">
+        <span class="h-1.5 w-1.5 rounded-full bg-primary-light animate-pulse" />
+        {locale === 'zh' ? '开源 · OpenClaw AI Agent 场景工坊' : 'Open Source · OpenClaw AI Agent Scenario Workshop'}
+      </div>
+
+      <!-- Title -->
+      <h1 class="font-display text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-7xl lg:leading-[1.3]">
+        <span class="text-white">{t('hero.titlePrefix', locale)} </span>
+        <span class="inline-flex items-baseline gap-2 sm:gap-3">
+          <img src="/openclaw-logo.svg" alt="OpenClaw" class="inline-block h-[0.75em] w-[0.75em] translate-y-[0.05em]" />
+          <span class="text-[#ff4d4d]">{t('hero.titleOpenClaw', locale)}</span>
+        </span>
+        <span class="text-white"> {t('hero.titleSuffix', locale)}</span>
+        <br />
+        <span class="gradient-text">{t('hero.titleHighlight', locale)}</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-text-secondary sm:text-xl">
+        {t('hero.subtitle', locale)}
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="mt-12 flex justify-center">
+        <DownloadButton locale={locale} client:load />
+      </div>
+
+      <!-- Platform badges -->
+      <p class="mt-6 text-xs text-text-muted">
+        {t('hero.platforms', locale)}
+      </p>
+    </div>
+
+    <!-- App screenshot -->
+    <div class="relative mx-auto mt-20 max-w-5xl">
+      <div class="glow-orb absolute -bottom-10 left-1/2 h-[300px] w-[600px] -translate-x-1/2 bg-primary/[0.12]" />
+      <div class="relative overflow-hidden rounded-2xl border border-border/50 shadow-2xl shadow-primary/10">
+        <!-- macOS chrome -->
+        <div class="flex items-center gap-2 border-b border-border/50 bg-bg-surface/80 px-4 py-3">
+          <div class="h-3 w-3 rounded-full bg-[#FF5F57]" />
+          <div class="h-3 w-3 rounded-full bg-[#FEBC2E]" />
+          <div class="h-3 w-3 rounded-full bg-[#28C840]" />
+          <span class="ml-3 text-xs text-text-muted">ClawZ</span>
+        </div>
+        <img
+          src={`/screenshots/hero-dashboard-${locale}.png`}
+          alt="ClawZ Dashboard"
+          class="block w-full"
+          loading="eager"
+        />
+      </div>
+      <!-- Reflection effect -->
+      <div class="absolute -bottom-px left-0 right-0 h-32 bg-gradient-to-b from-transparent to-bg-base" />
+    </div>
+  </div>
+</section>

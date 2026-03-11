@@ -1,0 +1,33 @@
+---
+import { t, type Locale } from '../../i18n/utils';
+import type { TranslationKey } from '../../i18n/en';
+
+interface Props {
+  emoji: string;
+  nameKey: string;
+  descKey: string;
+  tags: string[];
+  tagsZh: string[];
+  locale?: Locale;
+}
+
+const { emoji, nameKey, descKey, tags, tagsZh, locale = 'en' } = Astro.props;
+const displayTags = locale === 'zh' ? tagsZh : tags;
+---
+
+<div class="glass-card group rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5">
+  <div class="mb-4 text-3xl">{emoji}</div>
+  <h3 class="text-base font-semibold text-white">
+    {t(`${nameKey}.name` as TranslationKey, locale)}
+  </h3>
+  <p class="mt-2 text-sm leading-relaxed text-text-secondary line-clamp-2">
+    {t(`${descKey}.desc` as TranslationKey, locale)}
+  </p>
+  <div class="mt-4 flex flex-wrap gap-1.5">
+    {displayTags.map((tag) => (
+      <span class="rounded-full bg-bg-elevated px-2.5 py-0.5 text-[11px] text-text-muted">
+        {tag}
+      </span>
+    ))}
+  </div>
+</div>

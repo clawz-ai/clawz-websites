@@ -1,0 +1,61 @@
+---
+import { t, type Locale } from '../../i18n/utils';
+import ScrollReveal from '../ui/ScrollReveal.tsx';
+import { Zap, Monitor, Globe, Github, Shield, Users, Clock, Archive, Power, Trash2 } from 'lucide-react';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+
+const items = [
+  { icon: 'zap', titleKey: 'tech.native.title' as const, descKey: 'tech.native.desc' as const },
+  { icon: 'monitor', titleKey: 'tech.crossplatform.title' as const, descKey: 'tech.crossplatform.desc' as const },
+  { icon: 'globe', titleKey: 'tech.bilingual.title' as const, descKey: 'tech.bilingual.desc' as const },
+  { icon: 'github', titleKey: 'tech.opensource.title' as const, descKey: 'tech.opensource.desc' as const },
+  { icon: 'shield', titleKey: 'tech.secure.title' as const, descKey: 'tech.secure.desc' as const },
+  { icon: 'users', titleKey: 'tech.multiagent.title' as const, descKey: 'tech.multiagent.desc' as const },
+  { icon: 'clock', titleKey: 'tech.cron.title' as const, descKey: 'tech.cron.desc' as const },
+  { icon: 'archive', titleKey: 'tech.backup.title' as const, descKey: 'tech.backup.desc' as const },
+  { icon: 'power', titleKey: 'tech.gateway.title' as const, descKey: 'tech.gateway.desc' as const },
+  { icon: 'trash2', titleKey: 'tech.uninstall.title' as const, descKey: 'tech.uninstall.desc' as const },
+];
+---
+
+<section class="relative section-padding">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <ScrollReveal client:visible>
+      <div class="text-center">
+        <h2 class="font-display text-3xl font-bold text-white sm:text-4xl">
+          {t('tech.title', locale)}
+        </h2>
+      </div>
+    </ScrollReveal>
+
+    <div class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((item, i) => (
+        <ScrollReveal delay={i * 0.06} client:visible>
+          <div class="flex items-start gap-4 rounded-xl border border-border/30 bg-bg-surface/30 p-5 transition-colors hover:border-border/60 hover:bg-bg-surface/50">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-bg-elevated text-text-secondary">
+              {item.icon === 'zap' && <Zap className="h-5 w-5" />}
+              {item.icon === 'monitor' && <Monitor className="h-5 w-5" />}
+              {item.icon === 'globe' && <Globe className="h-5 w-5" />}
+              {item.icon === 'github' && <Github className="h-5 w-5" />}
+              {item.icon === 'shield' && <Shield className="h-5 w-5" />}
+              {item.icon === 'users' && <Users className="h-5 w-5" />}
+              {item.icon === 'clock' && <Clock className="h-5 w-5" />}
+              {item.icon === 'archive' && <Archive className="h-5 w-5" />}
+              {item.icon === 'power' && <Power className="h-5 w-5" />}
+              {item.icon === 'trash2' && <Trash2 className="h-5 w-5" />}
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold text-white">{t(item.titleKey, locale)}</h3>
+              <p class="mt-1 text-xs leading-relaxed text-text-secondary">{t(item.descKey, locale)}</p>
+            </div>
+          </div>
+        </ScrollReveal>
+      ))}
+    </div>
+  </div>
+</section>

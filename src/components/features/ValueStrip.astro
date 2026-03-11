@@ -1,0 +1,41 @@
+---
+import { t, type Locale } from '../../i18n/utils';
+import { Timer, LayoutTemplate, MessagesSquare } from 'lucide-react';
+import ScrollReveal from '../ui/ScrollReveal.tsx';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+
+const items = [
+  { icon: 'timer', titleKey: 'value.setup.title' as const, descKey: 'value.setup.desc' as const, gradient: 'from-blue-500/20 to-cyan-500/20' },
+  { icon: 'template', titleKey: 'value.scenarios.title' as const, descKey: 'value.scenarios.desc' as const, gradient: 'from-purple-500/20 to-pink-500/20' },
+  { icon: 'channels', titleKey: 'value.channels.title' as const, descKey: 'value.channels.desc' as const, gradient: 'from-green-500/20 to-emerald-500/20' },
+];
+---
+
+<section class="relative section-padding">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      {items.map((item, i) => (
+        <ScrollReveal delay={i * 0.1} client:visible>
+          <div class="glass-card group rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5">
+            <div class={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${item.gradient}`}>
+              {item.icon === 'timer' && <Timer className="h-6 w-6 text-blue-400" />}
+              {item.icon === 'template' && <LayoutTemplate className="h-6 w-6 text-purple-400" />}
+              {item.icon === 'channels' && <MessagesSquare className="h-6 w-6 text-green-400" />}
+            </div>
+            <h3 class="text-lg font-semibold text-white">
+              {t(item.titleKey, locale)}
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-text-secondary">
+              {t(item.descKey, locale)}
+            </p>
+          </div>
+        </ScrollReveal>
+      ))}
+    </div>
+  </div>
+</section>

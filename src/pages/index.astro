@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/layout/Navbar.astro';
+import Hero from '../components/hero/Hero.astro';
+import ValueStrip from '../components/features/ValueStrip.astro';
+import FeatureSection from '../components/features/FeatureSection.astro';
+import ScenarioGrid from '../components/scenarios/ScenarioGrid.astro';
+import HowItWorks from '../components/steps/HowItWorks.astro';
+import TechGrid from '../components/tech/TechGrid.astro';
+import DownloadCTA from '../components/cta/DownloadCTA.astro';
+import Footer from '../components/layout/Footer.astro';
+
+const locale = 'en';
+---
+
+<BaseLayout locale={locale}>
+  <Navbar locale={locale} />
+  <main>
+    <Hero locale={locale} />
+    <ValueStrip locale={locale} />
+    <FeatureSection locale={locale} />
+    <ScenarioGrid locale={locale} />
+    <HowItWorks locale={locale} />
+    <TechGrid locale={locale} />
+    <DownloadCTA locale={locale} />
+  </main>
+  <Footer locale={locale} />
+</BaseLayout>
