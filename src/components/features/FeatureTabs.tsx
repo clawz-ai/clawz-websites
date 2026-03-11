@@ -121,6 +121,8 @@ export default function FeatureTabs({ locale }: Props) {
             <img
               src={screenshotSrc}
               alt={data[active].title}
+              width={2560}
+              height={1540}
               className="block w-full"
               loading="lazy"
             />

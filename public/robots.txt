@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://claw-z.com/sitemap-index.xml
