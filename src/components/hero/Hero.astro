@@ -1,6 +1,7 @@
 ---
 import { t, type Locale } from '../../i18n/utils';
 import { getLatestRelease } from '../../data/release';
+import { getImage } from 'astro:assets';
 import DownloadButton from './DownloadButton.tsx';
 
 interface Props {
@@ -9,6 +10,15 @@ interface Props {
 
 const { locale = 'en' } = Astro.props;
 const release = await getLatestRelease();
+
+import heroEn from '../../assets/screenshots/hero-dashboard-en.png';
+import heroZh from '../../assets/screenshots/hero-dashboard-zh.png';
+const heroImage = await getImage({
+  src: locale === 'zh' ? heroZh : heroEn,
+  width: 1920,
+  format: 'webp',
+  quality: 80,
+});
 ---
 
 <section class="relative overflow-hidden pt-36 pb-24 lg:pt-48 lg:pb-40">
@@ -44,7 +54,7 @@ const release = await getLatestRelease();
 
       <!-- CTA Buttons -->
       <div class="mt-12 flex justify-center">
-        <DownloadButton locale={locale} release={release} client:load />
+        <DownloadButton locale={locale} release={release} client:idle />
       </div>
 
       <!-- Platform badges -->
@@ -65,10 +75,10 @@ const release = await getLatestRelease();
           <span class="ml-3 text-xs text-text-muted">ClawZ</span>
         </div>
         <img
-          src={`/screenshots/hero-dashboard-${locale}.png`}
+          src={heroImage.src}
+          width={heroImage.attributes.width}
+          height={heroImage.attributes.height}
           alt="ClawZ Dashboard"
-          width="2560"
-          height="1540"
           class="block w-full"
           loading="eager"
           fetchpriority="high"

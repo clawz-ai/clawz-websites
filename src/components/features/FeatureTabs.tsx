@@ -4,6 +4,7 @@ import { Layers, Bot, Brain, MessageSquare, BarChart3, Activity } from 'lucide-r
 
 interface Props {
   locale: 'en' | 'zh';
+  screenshotUrls: string[];
 }
 
 const icons = [Layers, Bot, Brain, MessageSquare, BarChart3, Activity];
@@ -27,17 +28,7 @@ const featureData = {
   ],
 };
 
-// Screenshot file names matching each feature tab
-const featureScreenshots = [
-  'feature-workshop',
-  'feature-agents',
-  'feature-models',
-  'feature-channels',
-  'feature-cost',
-  'feature-logs',
-];
-
-export default function FeatureTabs({ locale }: Props) {
+export default function FeatureTabs({ locale, screenshotUrls }: Props) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const data = featureData[locale];
@@ -52,8 +43,12 @@ export default function FeatureTabs({ locale }: Props) {
     return () => clearInterval(timer);
   }, [paused, advance]);
 
-  const lang = locale === 'zh' ? 'zh' : 'en';
-  const screenshotSrc = `/screenshots/${featureScreenshots[active]}-${lang}.png`;
+  // Prefetch next screenshot
+  useEffect(() => {
+    const nextIdx = (active + 1) % screenshotUrls.length;
+    const img = new Image();
+    img.src = screenshotUrls[nextIdx];
+  }, [active, screenshotUrls]);
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12">
@@ -119,10 +114,8 @@ export default function FeatureTabs({ locale }: Props) {
 
             {/* Feature screenshot */}
             <img
-              src={screenshotSrc}
+              src={screenshotUrls[active]}
               alt={data[active].title}
-              width={2560}
-              height={1540}
               className="block w-full"
               loading="lazy"
             />

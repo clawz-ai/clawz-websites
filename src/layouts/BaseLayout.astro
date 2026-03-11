@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { t, type Locale } from '../i18n/utils';
+import { getImage } from 'astro:assets';
 
 interface Props {
   locale?: Locale;
@@ -12,6 +13,16 @@ const description = t('meta.description', locale);
 const canonicalPath = locale === 'en' ? '/' : '/zh/';
 const canonicalUrl = `https://claw-z.com${canonicalPath}`;
 const ogImage = `https://claw-z.com/screenshots/hero-dashboard-${locale}.png`;
+
+// Preprocess hero image for LCP preload
+import heroEn from '../assets/screenshots/hero-dashboard-en.png';
+import heroZh from '../assets/screenshots/hero-dashboard-zh.png';
+const heroImage = await getImage({
+  src: locale === 'zh' ? heroZh : heroEn,
+  width: 1920,
+  format: 'webp',
+  quality: 80,
+});
 ---
 
 <!doctype html>
@@ -47,16 +58,46 @@ const ogImage = `https://claw-z.com/screenshots/hero-dashboard-${locale}.png`;
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <!-- Preload hero image (LCP optimization) -->
-    <link rel="preload" as="image" href={`/screenshots/hero-dashboard-${locale}.png`} />
+    <link rel="preload" as="image" type="image/webp" href={heroImage.src} />
 
-    <!-- Fonts -->
+    <!-- Fonts (non-render-blocking) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" />
+    </noscript>
 
     <title>{title}</title>
   </head>
   <body class="min-h-screen bg-bg-base text-text-primary antialiased">
     <slot />
+
+    <!-- Scroll reveal observer -->
+    <script>
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const el = entry.target as HTMLElement;
+              const delay = el.dataset.revealDelay;
+              if (delay) {
+                el.style.transitionDelay = delay;
+              }
+              el.classList.add('revealed');
+              observer.unobserve(el);
+            }
+          });
+        },
+        { rootMargin: '-60px' },
+      );
+      document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+    </script>
   </body>
 </html>
