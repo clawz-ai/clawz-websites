@@ -2,11 +2,18 @@ const API_URL = 'https://api.github.com/repos/clawz-ai/ClawZ/releases/latest';
 
 export interface ReleaseAsset {
   version: string;
-  aarch64Url: string;
+  arm64Url: string;
   x64Url: string;
 }
 
 let cached: ReleaseAsset | undefined;
+
+function findAssetUrl(
+  assets: Array<{ name?: string; browser_download_url?: string }>,
+  pattern: RegExp
+): string | undefined {
+  return assets.find((asset) => asset.name?.endsWith('.dmg') && pattern.test(asset.name))?.browser_download_url;
+}
 
 export async function getLatestRelease(): Promise<ReleaseAsset | undefined> {
   if (cached) return cached;
@@ -20,18 +27,14 @@ export async function getLatestRelease(): Promise<ReleaseAsset | undefined> {
     const data = await res.json();
     if (!data?.assets) return undefined;
 
-    const aarch64 = data.assets.find(
-      (a: { name: string }) => a.name.endsWith('.dmg') && a.name.includes('aarch64')
-    );
-    const x64 = data.assets.find(
-      (a: { name: string }) => a.name.endsWith('.dmg') && a.name.includes('x64')
-    );
+    const arm64Url = findAssetUrl(data.assets, /(arm64|aarch64)/i);
+    const x64Url = findAssetUrl(data.assets, /(x64|x86_64)/i);
 
-    if (aarch64 && x64) {
+    if (arm64Url && x64Url) {
       cached = {
         version: data.tag_name?.replace(/^v/, '') || '',
-        aarch64Url: aarch64.browser_download_url,
-        x64Url: x64.browser_download_url,
+        arm64Url,
+        x64Url,
       };
       return cached;
     }

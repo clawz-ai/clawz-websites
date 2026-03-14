@@ -3,7 +3,7 @@ import { Download } from 'lucide-react';
 
 interface ReleaseAsset {
   version: string;
-  aarch64Url: string;
+  arm64Url: string;
   x64Url: string;
 }
 
@@ -40,16 +40,16 @@ const GITHUB_RELEASES = 'https://github.com/clawz-ai/ClawZ/releases';
 
 export default function DownloadButton({ locale, release }: Props) {
   const [platform, setPlatform] = useState<Platform>('mac');
-  const [arch, setArch] = useState<'aarch64' | 'x64'>('aarch64');
+  const [arch, setArch] = useState<'arm64' | 'x64'>('arm64');
 
   useEffect(() => {
     setPlatform(detectPlatform());
-    setArch(isAppleSilicon() ? 'aarch64' : 'x64');
+    setArch(isAppleSilicon() ? 'arm64' : 'x64');
   }, []);
 
   const isMac = platform === 'mac';
   const dmgUrl = release
-    ? (arch === 'aarch64' ? release.aarch64Url : release.x64Url)
+    ? (arch === 'arm64' ? release.arm64Url : release.x64Url)
     : null;
   const downloadUrl = isMac && dmgUrl ? dmgUrl : GITHUB_RELEASES;
   const versionLabel = release?.version ? ` v${release.version}` : '';
